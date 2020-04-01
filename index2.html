@@ -1,0 +1,662 @@
+<html>
+<head>
+	<title>聽見，福爾摩沙</title>
+	<meta charset="utf-8">
+	<link href="css/fixed-positioning.css" rel="stylesheet" type="text/css">
+	<script src="scripts/jquery.min.js"></script>
+	<script type="text/javascript" src="scripts/skrollr.min.js"></script>
+	<script type="text/javascript" src="scripts/TweenMax.min.js"></script>
+	<script type="text/javascript"></script>
+	
+	<script>
+			$(document).ready(function(){
+
+				$(".word").fadeOut(1)
+				$(".wp0").fadeIn(1)
+				
+
+				for(no=0;no<11;no++)
+				{
+					$(".but:eq("+no+")").bind("click",{id:no},clickFn)
+				}
+					function clickFn(e)
+					{
+						
+						var target = e.data.id+1
+						var w = e.data.id;
+						$(".word").fadeOut(1)
+						$(".wp"+w).fadeIn(1)
+					
+						$(".photoimg:eq(1)").attr("src","img/story_photo/photo"+target+"-1.jpg")
+						$(".photoimg:eq(2)").attr("src","img/story_photo/photo"+target+"-2.jpg")
+						$(".photoimg:eq(3)").attr("src","img/story_photo/photo"+target+"-3.jpg")
+						
+					}
+				toggle=0;
+				$(".face").click(function(){
+					if(toggle==0)
+					{
+						TweenLite.to(".fb", 0.75, {right:0})
+						TweenLite.to(".intrologo", 0.75, {right:425})
+						$(".main").fadeTo(400,0)
+						$("html,body").css("overflow-y","hidden")
+						toggle++;
+					}
+					else
+					{
+						TweenLite.to(".fb", 0.75, {right:-425})
+						TweenLite.to(".intrologo", 0.75, {right:0})
+						$(".main").fadeTo(400,1)
+						$("html,body").css("overflow-y","auto")
+						toggle--;
+					}
+					
+				})
+
+
+				
+			})
+		</script>
+	<style type="text/css">
+		body
+		{
+			font-family: "Helvetica Neue", Helvetica, Arial, "新細明體", sans-serif;
+			background-color: black;
+		}
+		.outer
+		{
+			width:100%;
+			top:10%;
+			height:4600px;
+			position:absolute;
+
+		}
+		.main
+		{
+			position: relative;
+			margin: auto;
+			width:1350px;
+			height:4600px;
+			background-color: black;
+		}
+		.photo
+		{
+			width:1350px;
+			height:900px;
+			overflow: hidden;
+		}
+		.fb
+		{
+			background-color: white;
+			width:425px;
+			height:100%;
+			z-index: 101;
+			
+			right:-425;
+			position: relative;
+		}
+		.fb_frame
+		{
+			width:425px;
+			height:100%;
+			margin-top: -2px;
+			
+		}
+		.word
+		{
+			width:600px;
+			height:200px;
+			z-index: 101;
+
+			font-size: 10;
+			
+			text-shadow: 2px 2px 3px #000;
+			line-height: 40px;
+			color: white;
+		}
+		.button
+		{
+			width:600px;
+			height:100px;
+			position: relative;
+			margin: auto;
+		}
+		.word0
+		{
+			left: 50%;
+		}
+
+		.word1
+		{
+			left: 10%;
+		}
+		.word2
+		{
+			left: 7%;
+		}
+		.word3
+		{
+			left: 7%;
+		}
+		.word4
+		{
+			left: 33%;
+		}
+		.side
+		{
+			
+			width:100%;
+			height: 100%;
+			float: right;
+			
+			z-index: 130;
+
+			
+		}
+		.intrologo
+		{
+			width:200px;
+			text-align: right;
+			height:120px;
+			position: fixed;
+			bottom: 10;
+			right:10;
+			float: right;
+			z-index: 135;
+		}
+		body
+		{
+			overflow: hidden;
+			background-image: url(img/first2.png);
+			background-repeat: repeat;
+		}
+		.btnimg 
+		{
+			position: absolute;
+			
+		}
+		.b1{
+			bottom: 10px;
+			right: 125px;
+		}
+		.b2{
+			bottom: 10px;
+			right: 185px;
+		}
+		.b3{
+			bottom: 10px;
+			right: 245px;
+		}
+	</style>
+</head>
+<body class="WCL-02">
+	<div class="outer">
+		<div class="main">
+			<div class="photo skrollable skrollable-between" data-0="top:0px; opacity:1;" data-700="top:0; opacity:1;" data-900="top:-100px; opacity:0;">
+				<img class="photoimg" src="img/first1.png" width="1350" >
+				<div class="wp0 word word0 skrollable skrollable-between" data-0="top:10%;left:45%; opacity:0;" data-300="top:20%; opacity:1;" data-700="top:20%; opacity:1;" data-1200="top:40%; opacity:0;">
+					<h1>
+						「喀拉喀拉」的齒輪傳動聲<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;是活字印刷時的響聲<br>
+						&nbsp;&nbsp;曾經作為號角聲 帶動著文化前進
+					</h1>
+				</div>
+				<div class="wp1 word word0 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:20%; opacity:1;" data-700="top:20%; opacity:1;" data-1200="top:40%; opacity:0;">
+					<h1>
+						規律的金屬敲擊聲<br>
+						&nbsp;&nbsp;&nbsp;陳日新老先生阿龍打鐵舖<br>
+						&nbsp;興城街現存唯一真正的「打鐵」店鋪
+					</h1>
+				</div>
+				<div class="wp2 word word0 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:20%; opacity:1;" data-700="top:20%; opacity:1;" data-1200="top:40%; opacity:0;">
+					<h1>
+						轟隆隆的炮竹響徹雲霄<br>
+						這是廟會不可或缺的呎炮習俗<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;炮聲、火光、灰煙<br>
+						&nbsp;呎炮承載著信徒的記憶
+					</h1>
+				</div>
+				<div class="wp3 word word0 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:20%; opacity:1;" data-700="top:20%; opacity:1;" data-1200="top:40%; opacity:0;">
+					<h1>
+						此起彼落的鐘聲<br>
+						&nbsp;&nbsp;構成美妙的交響曲<br>
+						每天都在台南後壁
+					</h1>
+				</div>
+				<div class="wp4 word word0 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:20%; opacity:1;" data-700="top:20%; opacity:1;" data-1200="top:40%; opacity:0;">
+					<h1>
+						滄海一聲海螺響<br>
+						&nbsp;&nbsp;&nbsp;村內的罟仔腳們魚貫而出<br>
+						赤腳踏浪 吆喝著 期待豐收
+					</h1>
+				</div>
+				<div class="wp5 word word0 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:20%; opacity:1;" data-700="top:20%; opacity:1;" data-1200="top:40%; opacity:0;">
+					<h1>
+						小時候每到放學傍晚<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;「燒～肉粽～～」<br>
+						中氣十足的召喚聲總隨著香氣傳遍大家小巷
+					</h1>
+				</div>
+				<div class="wp6 word word0 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:20%; opacity:1;" data-700="top:20%; opacity:1;" data-1200="top:40%; opacity:0;">
+					<h1>
+						「逼─逼─逼─」熟悉的氣笛聲在清晨響起<br>
+						&nbsp;&nbsp;這是比公雞還早起的麵茶攤氣笛<br>
+						&nbsp;&nbsp;好似燒開水的熱水壺<br>
+						&nbsp;&nbsp;麵茶攤的聲響總能穿越鄰里
+
+					</h1>
+				</div>
+				<div class="wp7 word word0 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:20%; opacity:1;" data-700="top:20%; opacity:1;" data-1200="top:40%; opacity:0;">
+					<h1>
+						五分車是台糖運送蔗糖的小火車<br>
+						軌距僅有一般鐵路的一半而得名<br>
+						五分車走過台灣南部田野<br>
+						伴隨著蔗田、稻田與香蕉樹
+					</h1>
+				</div>
+				<div class="wp8 word word0 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:20%; opacity:1;" data-700="top:20%; opacity:1;" data-1200="top:40%; opacity:0;">
+					<h1>
+						「魚仔八十八十八十、百五百五百五...」<br>
+						&nbsp;&nbsp;&nbsp;黎明時分 叫賣聲像是一齣脫口秀<br>
+						在漁港旁的市場 激烈的上演著<br>
+					</h1>
+				</div>
+				<div class="wp9 word word0 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:20%; opacity:1;" data-700="top:20%; opacity:1;" data-1200="top:40%; opacity:0;">
+					<h1>
+						走訪台北城南常聽到一聲嚇人的巨響<br>
+						這是爆米香的獨特聲音<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;「砰!」氣爆聲過後<br>
+						空氣中便瀰漫濃濃的米香
+					</h1>
+				</div>
+				
+			</div>
+			
+		<!-- 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 -->
+			<div class="photo skrollable skrollable-between" data-0="top:0px; opacity:0;" data-900="top:0px; opacity:0;" data-1200="top:0px; opacity:1;" data-2400="top:0px; opacity:1;" data-2410="top:0px; opacity:0;">
+				<img class="photoimg" src="img/story_photo/photo1-1.jpg" width="1350" >
+				<div class="wp0 word word1 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:10%; opacity:0;" data-1400="left:7%; top:34%; opacity:0;"  data-1700="left:7%; top:37%; opacity:1;">
+					<h1>
+						進入老舊的倉庫<br>
+						映入眼簾的是一幅巨型的「字畫」<br>
+						老師傅迅速找到我們所說的字<br>
+						驚嘆之餘看到在溝槽中零落的字<br>
+						意味著這些聲音或許已被時代遺忘
+
+					</h1>
+				</div>
+				<div class="wp1 word word1 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:10%; opacity:0;" data-1400="left:7%; top:34%; opacity:0;"  data-1700="left:7%; top:37%; opacity:1;">
+					<h1>
+						尾隨著固定頻率的聲聲震響<br>
+						找到了這最傳統的打鐵舖<br>
+						只一名身形消瘦的老先生<br>
+						重複著同樣卻又有些微差距的動作<br>
+						只為在一次次微調讓鑽頭更完美
+					</h1>
+				</div>
+				<div class="wp2 word word1 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:10%; opacity:0;" data-1400="left:7%; top:34%; opacity:0;"  data-1700="left:7%; top:37%; opacity:1;">
+					<h1>
+						把長長一串紅鞭炮平躺<br>
+						橫亙在馬路間、神轎下<br>
+						在人群中倏地炸開<br>
+						聲響劃過天際、留下深深印記
+					</h1>
+				</div>
+				<div class="wp3 word word1 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:10%; opacity:0;" data-1400="left:7%; top:34%; opacity:0;"  data-1700="left:7%; top:37%; opacity:1;">
+					<h1>
+						一間乍看不甚起眼的鐘表行<br>
+						牆上掛滿早期的鐘擺掛鐘<br>
+						每到整點，隨著第一聲鐘響<br>
+						就可以聽到機械敲打銅條的協奏曲
+					</h1>
+				</div>
+				<div class="wp4 word word1 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:10%; opacity:0;" data-1400="left:7%; top:34%; opacity:0;"  data-1700="left:7%; top:37%; opacity:1;">
+					<h1>
+						牽罟以風平浪靜的三月到十月間為主<br>
+						於漲潮時用漁筏將漁網帶到海中投放<br>
+						退潮時魚群陷落於網內<br>
+						在牽罟捕魚的日子<br>
+						各罟槽的負責人會到漁場等候<br>
+						等魚群出現時 就立刻吹「罟螺」招集罟仔腳來牽罟捕魚。
+					</h1>
+				</div>
+				<div class="wp5 word word1 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:10%; opacity:0;" data-1400="left:7%; top:34%; opacity:0;"  data-1700="left:7%; top:37%; opacity:1;">
+					<h1>
+						<br>載著熱騰騰肉粽的小機車<br>
+						後面總跟著一群興奮的孩童<br>
+						那是一種簡單知足的快樂
+					</h1>
+				</div>
+				<div class="wp6 word word1 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:10%; opacity:0;" data-1400="left:7%; top:34%; opacity:0;"  data-1700="left:7%; top:37%; opacity:1;">
+					<h1>
+						老闆熟練地抓起麵茶粉<br>
+						撒上芝麻、佐上麻醬與花椒<br>
+						倒入滾燙熱水<br>
+						剎那間煙霧迷漫、香味撲鼻
+					</h1>
+				</div>
+				<div class="wp7 word word1 skrollable skrollable-between" data-0="top:10%; opacity:0;" ddata-300="top:10%; opacity:0;" data-1400="left:7%; top:34%; opacity:0;"  data-1700="left:7%; top:37%; opacity:1;">
+					<h1>
+						雲林的虎尾糖廠<br>
+						留存著全台僅存仍在使用的五分車<br>
+						獨特的車體設計、運行聲與鳴笛<br>
+						是屬於所有糖廠人的回憶
+					</h1>
+				</div>
+				<div class="wp8 word word1 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:10%; opacity:0;" data-1400="left:7%; top:34%; opacity:0;"  data-1700="left:7%; top:37%; opacity:1;">
+					<h1>
+						作為買家和賣家間的仲介<br>
+						「糶(ㄊㄧㄠˋ)手」<br>
+						往往是老闆是否能獲利、顧客是否能划算的主因<br>
+						須掌握漁貨的重量及品質，天氣、節日、漁獲量等各種因素<br>
+						即便是現在，也僅止於磅秤的使用來避免爭端
+					</h1>
+				</div>
+				<div class="wp9 word word1 skrollable skrollable-between" data-0="top:10%; opacity:0;" data-300="top:10%; opacity:0;" data-1400="left:7%; top:34%; opacity:0;"  data-1700="left:7%; top:37%; opacity:1;">
+					<h1>
+						<br>爆米香是台灣傳統的點心<br>
+						更是東方的爆米花<br>
+						記錄著台灣巷口文化的變遷
+					</h1>
+				</div>
+				
+
+			</div>
+			<!-- 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 -->
+			<div class="photo skrollable skrollable-between"  data-0="top:0px; opacity:0;" data-700="top:0px; opacity:0;" data-1200="top:0px; opacity:0;" data-2100="top:0px; opacity:0;" data-2400="top:0px; opacity:1;" data-3250="top:0px; opacity:1;"  data-3550="top:0px; opacity:0;" >
+				<img class="photoimg" src="img/story_photo/photo1-2.jpg" width="1350">
+				<div class="wp0 word word2 skrollable skrollable-between" data-2550="top:34%; opacity:0;" data-2850="top:37%; opacity:1;" >
+					<h1>
+						在沒有電腦的年代<br>	
+						印刷不是件人人可以做的事<br>
+						專業的印刷店裡有兩三具活字印刷機<br>
+						不停地反覆印製表格、帖子<br>
+						光是聲音就很熱鬧了<br>
+
+					</h1>
+				</div>
+				<div class="wp1 word word2 skrollable skrollable-between" data-2550="top:34%; opacity:0;" data-2850="top:37%; opacity:1;" >
+					<h1>
+						打鐵是大量體力流失的工作<br>
+						待在高溫的火爐旁，長期吸進燒後的廢氣<br>
+						讓打鐵師傅經常有肺病，而腰部也不堪重負<br>
+						在今日更是無人承接此類苦勞
+
+					</h1>
+				</div>
+				<div class="wp2 word word2 skrollable skrollable-between" data-2550="top:34%; opacity:0;" data-2850="top:37%; opacity:1;" >
+					<h1>
+						廟會是台灣庶民文化中最重要的一環<br>
+						傳統的嗩吶、南北管樂器演奏出獨特的弦律<br>
+						道教文化中的神祉與習俗<br>
+						是台灣最豐富多元的文化盛宴
+
+					</h1>
+				</div>
+				<div class="wp3 word word2 skrollable skrollable-between" data-2550="top:34%; opacity:0;" data-2850="top:37%; opacity:1;" >
+					<h1>
+						日據時代的台灣壁鐘<br>
+						逾三百年歷史的英、法古鐘<br>
+						這裡有著各式各樣的鐘<br>
+						這些全都是老闆殷瑞祥的寶貝
+
+					</h1>
+				</div>
+				<div class="wp4 word word2 skrollable skrollable-between" data-2550="top:34%; opacity:0;" data-2850="top:37%; opacity:1;" >
+					<h1>
+						作業時，由幾人乘罟仔船載罟網出海環繞半圈<br>
+						順序下網後 船再開回岸邊<br>
+						由一人入水牽網繩的另一端上岸後<br>
+						「罟腳」們排成兩排合力拖拉網繩的二端
+
+					</h1>
+				</div>
+				<div class="wp5 word word2 skrollable skrollable-between" data-2550="top:34%; opacity:0;" data-2850="top:37%; opacity:1;" >
+					<h1>
+						賣肉粽的阿伯打開熱騰騰的蒸籠<br>
+						眾人的期待化為笑靨<br>
+						蒸氣由籠內竄出<br>
+						讓肉粽多了點神祕美
+
+					</h1>
+				</div>
+				<div class="wp6 word word2 skrollable skrollable-between" data-2550="top:34%; opacity:0;" data-2850="top:37%; opacity:1;" >
+					<h1>
+						端著一碗糊糊香香的麵茶<br>
+						遠方的天空泛起魚肚白<br>
+						熱氣逼走陣陣寒意<br>
+						讓人肚子和心都暖暖的
+
+					</h1>
+				</div>
+				<div class="wp7 word word2 skrollable skrollable-between" data-2550="top:34%; opacity:0;" data-2850="top:37%; opacity:1;" >
+					<h1>
+						<br>
+						從日治時代至今<br>
+						五分車的軌道彎彎長長<br>
+						在台灣的土地上留下甜甜的一條線<br>
+
+					</h1>
+				</div>
+				<div class="wp8 word word2 skrollable skrollable-between" data-2550="top:34%; opacity:0;" data-2850="top:37%; opacity:1;" >
+					<h1>
+						深夜的叫賣、加上手提至少三十台斤以上漁貨<br>
+						糶手工作之吃力可想而知<br>
+						聲音之餘，糶手的手勢、記帳員使用的傳統代碼<br>
+						更是隱藏著漁市這個環境吸引人的地方
+					</h1>
+				</div>
+				<div class="wp9 word word2 skrollable skrollable-between" data-2550="top:34%; opacity:0;" data-2850="top:37%; opacity:1;" >
+					<h1>
+						爆米香是以稻米為主材<br>
+						放入壓力爐加熱加壓<br>
+						打開爐前的一句閩南話<br>
+						「要爆阿!」<br>
+						伴隨著壓力釋放的轟然巨響
+
+					</h1>
+				</div>
+				
+		<!-- 000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 -->
+			</div>
+			<div class="photo skrollable skrollable-between"  data-1500="top:0px; opacity:0;"  data-3150="top:0px; opacity:0;" data-3550="top:0px; opacity:0;" data-4000="top:0px; opacity:1;">
+				<img class="photoimg" src="img/story_photo/photo1-3.jpg" width="1350">
+				<div class="wp0 word word3 skrollable skrollable-between" data-3650="top:34%; opacity:0;" data-4000="top:37%; opacity:1;">
+					<h1>	
+						規律的齒輪轉動聲 跟不上時代的齒輪速度<br>
+						剩下的只有零零散散的鉛塊<br>
+						這些聲音沉睡在北港的某間舊倉庫裡<br>
+						過不久可能就再也聽不到了
+					</h1>
+				</div>
+				<div class="wp1 word word3 skrollable skrollable-between" data-3650="top:34%; opacity:0;" data-4000="top:37%; opacity:1;">
+					<h1>	
+						<br>
+						在一聲聲鋼與鐵相互敲擊的脆響<br>
+						彷彿聽到了師父鏗鏘不曲的堅持<br>
+						卻同時也聽到了無奈的嘆息聲
+					</h1>
+				</div>
+				<div class="wp2 word word3 skrollable skrollable-between" data-3650="top:34%; opacity:0;" data-4000="top:37%; opacity:1;">
+					<h1>	
+						<br>
+						呎炮常綿延數里<br>
+						伴隨眾信徒的步伐<br>
+						隱含著消災、迎神的意義
+					</h1>
+				</div>
+				<div class="wp3 word word3 skrollable skrollable-between" data-3650="top:34%; opacity:0;" data-4000="top:37%; opacity:1;">
+					<h1>	
+						<br>
+						高齡八十六歲的殷瑞祥開店已超過六十年<br>
+						十五歲開始學習鐘表技術<br>
+						紮實的訓練讓他修復鐘表的手藝，聞名全台
+					</h1>
+				</div>
+				<div class="wp4 word word3 skrollable skrollable-between" data-3650="top:34%; opacity:0;" data-4000="top:37%; opacity:1;">
+					<h1>	
+						「牽罟」是先人篳路藍縷與自然共存的回憶<br>
+						現在當我們聽著響徹海岸的螺聲<br>
+						似乎已經不見罟腳們為生活出門捕魚去的景象<br>
+						或許只是哪個遊客剛好吹出了聲響
+					</h1>
+				</div>
+				<div class="wp5 word word3 skrollable skrollable-between" data-3650="top:34%; opacity:0;" data-4000="top:37%; opacity:1;">
+					<h1>	
+						終於香氣散去<br>
+						大夥捧著肉粽、手舞足蹈<br>
+						口齒留香之時<br>
+						總在盼望下一次「燒～肉粽～～」的叫賣聲
+					</h1>
+				</div>
+				<div class="wp6 word word3 skrollable skrollable-between" data-3650="top:34%; opacity:0;" data-4000="top:37%; opacity:1;">
+					<h1>	
+						
+						<br>麵茶一定要用最滾燙的熱水沖泡<br>
+						因此熱水壺的溫度總是很高<br>
+						也讓氣笛聲綿延不斷
+					</h1>
+				</div>
+				<div class="wp7 word word3 skrollable skrollable-between" data-3650="top:34%; opacity:0;" data-4000="top:37%; opacity:1;">
+					<h1>	
+						走在鐵路上、揹著一把木吉他<br>
+						火車是許多人的青春記憶<br>
+						而五分車更是台灣特有糖廠文化的遺跡<br>
+						在長長的軌道上慢慢運行
+					</h1>
+				</div>
+				<div class="wp8 word word3 skrollable skrollable-between" data-3650="top:34%; opacity:0;" data-4000="top:37%; opacity:1;">
+					<h1>	
+						<br>
+						傳統的漁市場穿梭著討海人的身影<br>
+						更寫下台灣奮鬥不懈的精神<br>
+						與基隆海岸最美麗的風景
+					</h1>
+				</div>
+				<div class="wp9 word word3 skrollable skrollable-between" data-3650="top:34%; opacity:0;" data-4000="top:37%; opacity:1;">
+					<h1>	
+						<br>
+						爆米香常切為條狀<br>
+						有些還加入花生芝麻等口味<br>
+						是尋常卻富有滋味的小吃
+					</h1>
+				</div>
+			</div>
+			
+<!-- -0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000 -->
+			<div class="photo skrollable skrollable-between" data-4400="top:0px; opacity:0;" data-4750="top:0px; opacity:1;">
+				<img class="photoimg" src="img/first2.png" width="1350">
+				<div class="wp0 word word4 skrollable skrollable-between" data-0="top:13%; opacity:0;" data-4600="top:22%; opacity:0;" data-5000="top:25%; opacity:1;">
+					<h1>	
+						請閉上眼睛<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;聽聽看<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;這是屬於台灣、屬於&nbsp;文化&nbsp;的聲音
+					</h1>
+				</div>
+				<div class="wp1 word word4 skrollable skrollable-between" data-0="top:17%; opacity:0;" data-4600="top:22%; opacity:0;" data-5000="top:25%; opacity:1;">
+					<h1>	
+						請閉上眼睛<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;聽聽看<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;這是屬於台灣、屬於&nbsp;工藝&nbsp;的聲音
+					</h1>
+				</div>
+				<div class="wp2 word word4 skrollable skrollable-between" data-0="top:17%; opacity:0;" data-4600="top:22%; opacity:0;" data-5000="top:25%; opacity:1;">
+					<h1>	
+						請閉上眼睛<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;聽聽看<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;這是屬於台灣、屬於&nbsp;民間&nbsp;的聲音
+					</h1>
+				</div>
+				<div class="wp3 word word4 skrollable skrollable-between" data-0="top:17%; opacity:0;" data-4600="top:22%; opacity:0;" data-5000="top:25%; opacity:1;">
+					<h1>	
+						請閉上眼睛<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;聽聽看<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;這是屬於台灣，屬於&nbsp;時間&nbsp;的聲音
+					</h1>
+				</div>
+				<div class="wp4 word word4 skrollable skrollable-between" data-0="top:17%; opacity:0;" data-4600="top:22%; opacity:0;" data-5000="top:25%; opacity:1;">
+					<h1>	
+						請閉上眼睛<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;聽聽看<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;這是屬於台灣，屬於&nbsp;漁村&nbsp;的聲音
+					</h1>
+				</div>
+				<div class="wp5 word word4 skrollable skrollable-between" data-0="top:17%; opacity:0;" data-4600="top:13%; opacity:0;" data-5000="top:17%; opacity:1;">
+					<h1>	
+						請閉上眼睛<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;聽聽看<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;這是屬於台灣，屬於&nbsp;童年&nbsp;的聲音
+					</h1>
+				</div>
+				<div class="wp6 word word4 skrollable skrollable-between" data-0="top:17%; opacity:0;" data-4600="top:22%; opacity:0;" data-5000="top:25%; opacity:1;">
+					<h1>	
+						請閉上眼睛<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;聽聽看<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;這是屬於台灣，屬於&nbsp;味覺&nbsp;的聲音
+					</h1>
+				</div>
+				<div class="wp7 word word4 skrollable skrollable-between" data-0="top:17%; opacity:0;" data-4600="top:22%; opacity:0;" data-5000="top:25%; opacity:1;">
+					<h1>	
+						請閉上眼睛<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;聽聽看<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;這是屬於台灣，屬於&nbsp;阡陌&nbsp;的聲音
+					</h1>
+				</div>
+				<div class="wp8 word word4 skrollable skrollable-between" data-0="top:17%; opacity:0;" data-4600="top:22%; opacity:0;" data-5000="top:25%; opacity:1;">
+					<h1>	
+						
+						請閉上眼睛<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;聽聽看<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;這是屬於台灣，屬於&nbsp;糶手&nbsp;的聲音
+					</h1>
+				</div>
+				<div class="wp9 word word4 skrollable skrollable-between" data-0="top:17%; opacity:0;" data-4600="top:22%; opacity:0;" data-5000="top:25%; opacity:1;">
+					<h1>	
+						請閉上眼睛<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;聽看<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;這是屬於台灣，屬於&nbsp;巷口&nbsp;的聲音
+					</h1>
+				</div>
+			</div>
+		</div>
+		
+		
+	</div>
+	<div class="side	 skrollable skrollable-between"  data-0="top:0px; opacity:1;" >
+				<div class="fb skrollable">
+					<iframe class="fb_frame" src="fb.html" frameborder="0" scrolling="yes"></iframe>
+				</div>
+				<div class="intrologo skrollable"  data-0="bottom:10px; opacity:1;" >
+					<img class="btnimg b1"src="img/btn-back.png" width="50px" height="50px">
+					<img class="face btnimg b2" src="img/btn-fb.png" width="50px" height="50px" >
+					<img class="btnimg b3"src="img/btn-e.png" width="50px" height="50px">
+					<img src="img/in.png" width="120px" height="120px">
+				</div>			
+	</div>
+
+
+	<div class="skrollable skrollable-between" style="width:50%; height:100px; top:0; z-index:155;"  data-0="top:0px;" data-750="top:0px;">
+			<div class="button skrollable skrollable-between">
+				<button class="but" id="b1">1</button>
+				<button class="but" id="b2">2</button>
+				<button class="but" id="b3">3</button>
+				<button class="but" id="b4">4</button>
+				<button class="but" id="b5">5</button>
+				<button class="but" id="b6">6</button>
+				<button class="but" id="b7">7</button>
+				<button class="but" id="b8">8</button>
+				<button class="but" id="b9">9</button>
+				<button class="but" id="b10">10</button>
+				<button class="but" id="b11">11</button>
+				<button class="face">fb</button>
+
+				
+
+
+			</div>
+		</div>
+	<script type="text/javascript">
+		var a= skrollr.init();
+	</script>
+</body>
+</html>
