@@ -7,6 +7,7 @@ function App() {
   const [activeStoryId, setActiveStoryId] = useState(stories[0].id)
   const [activeSceneIndex, setActiveSceneIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [isSceneFullscreen, setIsSceneFullscreen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isCommentsOpen, setIsCommentsOpen] = useState(false)
   const [isInitialReady, setIsInitialReady] = useState(false)
@@ -65,9 +66,32 @@ function App() {
     audioElement.load()
   }, [activeStoryId])
 
+  useEffect(() => {
+    if (!isSceneFullscreen) {
+      return
+    }
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    const handleKeydown = (event) => {
+      if (event.key === 'Escape') {
+        setIsSceneFullscreen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeydown)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', handleKeydown)
+    }
+  }, [isSceneFullscreen])
+
   const selectStory = (storyId) => {
     setActiveStoryId(storyId)
     setActiveSceneIndex(0)
+    setIsSceneFullscreen(false)
     setIsCommentsOpen(false)
     setIsPlaying(false)
     setPlaybackError('')
@@ -199,56 +223,7 @@ function App() {
                 {playbackError}
               </p>
             ) : null}
-          </div>
-          <audio ref={audioRef} preload="metadata" onEnded={() => setIsPlaying(false)}>
-            <source src={activeStory.audio.mp3} type="audio/mpeg" />
-            <source src={activeStory.audio.ogg} type="audio/ogg" />
-          </audio>
-        </section>
-
-        <div className="story-panel">
-          <section className="story-intro">
-            <p>{activeStory.description}</p>
-          </section>
-
-          <section className="album-list">
-            <div className="album-list__head">
-              <h3>聲景選輯</h3>
-              <button
-                type="button"
-                className="album-list__menu-btn"
-                onClick={() => setIsMenuOpen((prev) => !prev)}
-              >
-                {isMenuOpen ? '收起選單' : '展開選單'}
-              </button>
-            </div>
-            <div className={`album-list__grid ${isMenuOpen ? 'is-open' : ''}`}>
-              {stories.map((story, index) => {
-                const isActive = story.id === activeStoryId
-                return (
-                  <button
-                    type="button"
-                    key={story.id}
-                    className={`album-card ${isActive ? 'is-active' : ''}`}
-                    onClick={() => selectStory(story.id)}
-                    aria-pressed={isActive}
-                  >
-                    <img
-                      src={story.coverImage}
-                      alt={`${story.title} 專輯`}
-                      loading={index < 3 ? 'eager' : 'lazy'}
-                      decoding="async"
-                    />
-                    <span>{story.title}</span>
-                  </button>
-                )
-              })}
-            </div>
-          </section>
-
-          <section className="scene-list">
-            <div className="scene-list__head">
-              <h3>故事章節</h3>
+            <div className="player__scene-tools">
               <div className="scene-nav">
                 <button
                   type="button"
@@ -276,36 +251,89 @@ function App() {
                   </svg>
                 </button>
               </div>
-            </div>
-
-            <article className="scene-card is-in-view">
-              <img
-                src={activeScene.image}
-                alt={`${activeStory.title} ${activeScene.heading}`}
-                loading="eager"
-                decoding="async"
-              />
-              <div className="scene-card__content">
-                <h4>{activeScene.heading}</h4>
-                <p>{activeScene.text}</p>
+              <div className="scene-switcher player__scene-switcher">
+                {activeStory.scenes.map((scene, index) => (
+                  <button
+                    type="button"
+                    key={scene.heading}
+                    className={`scene-switcher__btn ${activeSceneIndex === index ? 'is-active' : ''}`}
+                    onClick={() => selectScene(index)}
+                    aria-pressed={activeSceneIndex === index}
+                  >
+                    <span className="scene-switcher__index">{index + 1}</span>
+                    <span className="scene-switcher__title">{scene.heading}</span>
+                  </button>
+                ))}
               </div>
-            </article>
-
-            <div className="scene-switcher">
-              {activeStory.scenes.map((scene, index) => (
-                <button
-                  type="button"
-                  key={scene.heading}
-                  className={`scene-switcher__btn ${activeSceneIndex === index ? 'is-active' : ''}`}
-                  onClick={() => selectScene(index)}
-                  aria-pressed={activeSceneIndex === index}
-                >
-                  <span className="scene-switcher__index">{index + 1}</span>
-                  <span className="scene-switcher__title">{scene.heading}</span>
-                </button>
-              ))}
             </div>
-          </section>
+          </div>
+          <audio ref={audioRef} preload="metadata" onEnded={() => setIsPlaying(false)}>
+            <source src={activeStory.audio.mp3} type="audio/mpeg" />
+            <source src={activeStory.audio.ogg} type="audio/ogg" />
+          </audio>
+        </section>
+
+        <section className="scene-stage">
+          <article className="story-intro">
+            <p>{activeStory.description}</p>
+          </article>
+          <div className="scene-stage__head">
+            <h3>故事章節</h3>
+            <button
+              type="button"
+              className="brand-btn scene-stage__immersive-btn"
+              onClick={() => setIsSceneFullscreen(true)}
+            >
+              全螢幕展開
+            </button>
+          </div>
+          <article className="scene-card is-in-view">
+            <img
+              src={activeScene.image}
+              alt={`${activeStory.title} ${activeScene.heading}`}
+              loading="eager"
+              decoding="async"
+            />
+            <div className="scene-card__content">
+              <h4>{activeScene.heading}</h4>
+              <p>{activeScene.text}</p>
+            </div>
+          </article>
+        </section>
+      </section>
+
+      <section className="album-list">
+        <div className="album-list__head">
+          <h3>聲音選輯</h3>
+          <button
+            type="button"
+            className="brand-btn album-list__menu-btn"
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+          >
+            {isMenuOpen ? '收起選單' : '展開選單'}
+          </button>
+        </div>
+        <div className={`album-list__grid ${isMenuOpen ? 'is-open' : ''}`}>
+          {stories.map((story, index) => {
+            const isActive = story.id === activeStoryId
+            return (
+              <button
+                type="button"
+                key={story.id}
+                className={`album-card ${isActive ? 'is-active' : ''}`}
+                onClick={() => selectStory(story.id)}
+                aria-pressed={isActive}
+              >
+                <img
+                  src={story.coverImage}
+                  alt={`${story.title} 專輯`}
+                  loading={index < 3 ? 'eager' : 'lazy'}
+                  decoding="async"
+                />
+                <span>{story.title}</span>
+              </button>
+            )
+          })}
         </div>
       </section>
 
@@ -314,6 +342,7 @@ function App() {
           <h3>社群留言</h3>
           <button
             type="button"
+            className="brand-btn"
             onClick={() => setIsCommentsOpen((prev) => !prev)}
           >
             {isCommentsOpen ? '收起留言' : '載入留言'}
@@ -331,6 +360,39 @@ function App() {
           <p className="comments__placeholder">點擊上方按鈕即可載入留言。</p>
         )}
       </section>
+
+      {isSceneFullscreen ? (
+        <div className="immersive-view" role="dialog" aria-modal="true" aria-label="故事章節沉浸模式">
+          <img
+            src={activeScene.image}
+            alt={`${activeStory.title} ${activeScene.heading}`}
+            className="immersive-view__image"
+            loading="eager"
+            decoding="async"
+          />
+          <div className="immersive-view__shade" />
+          <button
+            type="button"
+            className="immersive-view__close"
+            onClick={() => setIsSceneFullscreen(false)}
+            aria-label="關閉沉浸模式"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M18.3 5.7L12 12l6.3 6.3-1.4 1.4L10.6 13.4 4.3 19.7l-1.4-1.4L9.2 12 2.9 5.7l1.4-1.4 6.3 6.3 6.3-6.3z"
+                fill="currentColor"
+              />
+            </svg>
+          </button>
+          <div className="immersive-view__content">
+            <p className="immersive-view__meta">
+              {activeStory.title} · 章節 {activeSceneIndex + 1}
+            </p>
+            <h4>{activeScene.heading}</h4>
+            <p>{activeScene.text}</p>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
