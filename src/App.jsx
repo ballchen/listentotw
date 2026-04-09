@@ -4,12 +4,12 @@ import './App.css'
 
 function App() {
   const audioRef = useRef(null)
+  const immersiveTouchStartXRef = useRef(null)
   const [activeStoryId, setActiveStoryId] = useState(stories[0].id)
   const [activeSceneIndex, setActiveSceneIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isSceneFullscreen, setIsSceneFullscreen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [isCommentsOpen, setIsCommentsOpen] = useState(false)
   const [isInitialReady, setIsInitialReady] = useState(false)
   const [playbackError, setPlaybackError] = useState('')
 
@@ -77,6 +77,16 @@ function App() {
     const handleKeydown = (event) => {
       if (event.key === 'Escape') {
         setIsSceneFullscreen(false)
+        return
+      }
+
+      if (event.key === 'ArrowLeft') {
+        setActiveSceneIndex((prev) => Math.max(prev - 1, 0))
+        return
+      }
+
+      if (event.key === 'ArrowRight') {
+        setActiveSceneIndex((prev) => Math.min(prev + 1, activeStory.scenes.length - 1))
       }
     }
 
@@ -86,13 +96,12 @@ function App() {
       document.body.style.overflow = previousOverflow
       window.removeEventListener('keydown', handleKeydown)
     }
-  }, [isSceneFullscreen])
+  }, [isSceneFullscreen, activeStory.scenes.length])
 
   const selectStory = (storyId) => {
     setActiveStoryId(storyId)
     setActiveSceneIndex(0)
     setIsSceneFullscreen(false)
-    setIsCommentsOpen(false)
     setIsPlaying(false)
     setPlaybackError('')
   }
@@ -100,6 +109,29 @@ function App() {
   const selectScene = (sceneIndex) => {
     const boundedIndex = Math.max(0, Math.min(sceneIndex, activeStory.scenes.length - 1))
     setActiveSceneIndex(boundedIndex)
+  }
+
+  const handleImmersiveTouchStart = (event) => {
+    immersiveTouchStartXRef.current = event.changedTouches[0]?.clientX ?? null
+  }
+
+  const handleImmersiveTouchEnd = (event) => {
+    const startX = immersiveTouchStartXRef.current
+    if (startX === null) {
+      return
+    }
+
+    const endX = event.changedTouches[0]?.clientX ?? startX
+    const deltaX = endX - startX
+    const swipeThreshold = 48
+
+    if (deltaX <= -swipeThreshold) {
+      selectScene(activeSceneIndex + 1)
+    } else if (deltaX >= swipeThreshold) {
+      selectScene(activeSceneIndex - 1)
+    }
+
+    immersiveTouchStartXRef.current = null
   }
 
   const handlePlay = async () => {
@@ -337,32 +369,15 @@ function App() {
         </div>
       </section>
 
-      <section className="comments">
-        <div className="comments__head">
-          <h3>社群留言</h3>
-          <button
-            type="button"
-            className="brand-btn"
-            onClick={() => setIsCommentsOpen((prev) => !prev)}
-          >
-            {isCommentsOpen ? '收起留言' : '載入留言'}
-          </button>
-        </div>
-        {isCommentsOpen ? (
-          <iframe
-            key={activeStory.id}
-            title={`${activeStory.title} facebook comments`}
-            src={`/fb${activeStory.id - 1}.html`}
-            className="comments__frame"
-            loading="lazy"
-          />
-        ) : (
-          <p className="comments__placeholder">點擊上方按鈕即可載入留言。</p>
-        )}
-      </section>
-
       {isSceneFullscreen ? (
-        <div className="immersive-view" role="dialog" aria-modal="true" aria-label="故事章節沉浸模式">
+        <div
+          className="immersive-view"
+          role="dialog"
+          aria-modal="true"
+          aria-label="故事章節沉浸模式"
+          onTouchStart={handleImmersiveTouchStart}
+          onTouchEnd={handleImmersiveTouchEnd}
+        >
           <img
             src={activeScene.image}
             alt={`${activeStory.title} ${activeScene.heading}`}
@@ -371,6 +386,28 @@ function App() {
             decoding="async"
           />
           <div className="immersive-view__shade" />
+          <button
+            type="button"
+            className="immersive-view__nav immersive-view__nav--prev"
+            onClick={() => selectScene(activeSceneIndex - 1)}
+            disabled={!canGoPrevScene}
+            aria-label="上一章"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M15.4 5.9L9.3 12l6.1 6.1-1.4 1.4L6.5 12l7.5-7.5z" fill="currentColor" />
+            </svg>
+          </button>
+          <button
+            type="button"
+            className="immersive-view__nav immersive-view__nav--next"
+            onClick={() => selectScene(activeSceneIndex + 1)}
+            disabled={!canGoNextScene}
+            aria-label="下一章"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M8.6 18.1L14.7 12 8.6 5.9 10 4.5l7.5 7.5-7.5 7.5z" fill="currentColor" />
+            </svg>
+          </button>
           <button
             type="button"
             className="immersive-view__close"

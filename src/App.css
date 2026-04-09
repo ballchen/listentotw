@@ -13,7 +13,7 @@
   gap: 20px;
   align-items: center;
   background: linear-gradient(135deg, rgba(20, 20, 25, 0.96), rgba(16, 16, 20, 0.82));
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 20px;
   padding: 24px;
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
@@ -23,7 +23,7 @@
   width: 100%;
   border-radius: 16px;
   object-fit: cover;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .hero h1 {
@@ -66,7 +66,7 @@
   padding: 20px;
   border-radius: 20px;
   background: rgba(13, 13, 18, 0.84);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   position: sticky;
   top: 20px;
 }
@@ -235,7 +235,7 @@
   line-height: 1.9;
   color: #f5f6ff;
   background: rgba(12, 12, 17, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 0;
 }
 
 .story-intro p {
@@ -290,7 +290,7 @@
   grid-template-columns: 1fr;
   border-radius: 18px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 0;
   background: rgba(12, 12, 17, 0.82);
   opacity: 1;
   transform: translateY(0);
@@ -361,7 +361,7 @@
 .album-list {
   border-radius: 18px;
   background: rgba(12, 12, 17, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  border: 0;
   padding: 20px;
 }
 
@@ -392,7 +392,7 @@
 }
 
 .album-card {
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   background: rgba(28, 30, 44, 0.72);
   padding: 8px;
@@ -405,7 +405,7 @@
 
 .album-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(229, 232, 255, 0.9);
+  border-color: rgba(229, 232, 255, 0.42);
   box-shadow: 0 10px 22px rgba(27, 33, 79, 0.35);
 }
 
@@ -423,48 +423,8 @@
 }
 
 .album-card.is-active {
-  border-color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
   background: linear-gradient(180deg, rgba(205, 211, 255, 0.26), rgba(76, 82, 120, 0.4));
-}
-
-.comments {
-  border-radius: 18px;
-  background: rgba(12, 12, 17, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  padding: 20px;
-  margin-bottom: 24px;
-}
-
-.comments__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.comments h3 {
-  margin: 0;
-  color: #ffffff;
-  font-size: 1.2rem;
-}
-
-.comments__head button {
-  padding: 10px 14px;
-  font-weight: 700;
-}
-
-.comments__placeholder {
-  margin: 12px 0 0;
-  color: rgba(255, 255, 255, 0.82);
-}
-
-.comments__frame {
-  width: 100%;
-  height: 340px;
-  border: 0;
-  border-radius: 14px;
-  margin-top: 12px;
-  background: #ffffff;
 }
 
 .immersive-view {
@@ -518,7 +478,7 @@
   width: min(920px, calc(100% - 36px));
   border-radius: 16px;
   background: rgba(8, 10, 21, 0.74);
-  border: 1px solid rgba(222, 228, 255, 0.32);
+  border: 0;
   padding: 16px 18px;
   backdrop-filter: blur(4px);
 }
@@ -636,8 +596,7 @@
   }
 
   .story-intro,
-  .album-list,
-  .comments {
+  .album-list {
     padding: 14px;
   }
 
@@ -683,8 +642,4 @@
     padding: 12px 13px;
   }
 
-  .comments__head {
-    align-items: flex-start;
-    flex-direction: column;
-  }
 }
