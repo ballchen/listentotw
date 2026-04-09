@@ -4,7 +4,9 @@ import './App.css'
 
 function App() {
   const audioRef = useRef(null)
+  const sceneRefs = useRef([])
   const [activeStoryId, setActiveStoryId] = useState(stories[0].id)
+  const [activeSceneIndex, setActiveSceneIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isCommentsOpen, setIsCommentsOpen] = useState(false)
@@ -61,8 +63,40 @@ function App() {
     audioElement.load()
   }, [activeStoryId])
 
+  useEffect(() => {
+    const desktopViewport = window.matchMedia('(min-width: 981px)')
+    if (!desktopViewport.matches) {
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const nextIndex = Number(entry.target.getAttribute('data-scene-index') ?? 0)
+            setActiveSceneIndex(nextIndex)
+          }
+        })
+      },
+      {
+        threshold: 0.6,
+      },
+    )
+
+    sceneRefs.current.forEach((scene) => {
+      if (scene) {
+        observer.observe(scene)
+      }
+    })
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [activeStoryId])
+
   const selectStory = (storyId) => {
     setActiveStoryId(storyId)
+    setActiveSceneIndex(0)
     setIsCommentsOpen(false)
     setIsPlaying(false)
     setPlaybackError('')
@@ -123,104 +157,115 @@ function App() {
         <div className="hero__text-group">
           <p className="hero__eyebrow">Taiwan Cultural Soundscape</p>
           <h1>聽見，福爾摩沙</h1>
-          <p className="hero__description">
-            將舊站重構為現代化網頁體驗，保留原有故事精神，並改善載入效能、互動流暢度與手機閱讀體驗。
-          </p>
         </div>
       </header>
 
-      <section className="player">
-        <div className="player__cover-wrap">
-          <img
-            src={activeStory.coverImage}
-            alt={`${activeStory.title} 封面`}
-            className={`player__cover ${isPlaying ? 'is-spinning' : ''}`}
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-          />
-        </div>
-        <div className="player__meta">
-          <p className="player__category">{activeStory.category}</p>
-          <h2>{activeStory.title}</h2>
-          <p className="player__quote">{activeStory.quote}</p>
-          <div className="player__controls">
-            <button type="button" onClick={handlePlay}>
-              播放
-            </button>
-            <button type="button" onClick={handlePause}>
-              暫停
-            </button>
-            <button type="button" onClick={handleStop}>
-              停止
-            </button>
+      <section className="experience">
+        <section className="player">
+          <div className="player__cover-wrap">
+            <img
+              src={activeStory.coverImage}
+              alt={`${activeStory.title} 封面`}
+              className={`player__cover ${isPlaying ? 'is-spinning' : ''}`}
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
+            />
           </div>
-          {playbackError ? (
-            <p className="player__error" role="alert">
-              {playbackError}
+          <div className="player__meta">
+            <p className="player__category">{activeStory.category}</p>
+            <h2>{activeStory.title}</h2>
+            <p className="player__quote">{activeStory.quote}</p>
+            <p className="player__scene-indicator">
+              章節 {activeSceneIndex + 1} / {activeStory.scenes.length}
             </p>
-          ) : null}
-        </div>
-        <audio ref={audioRef} preload="metadata" onEnded={() => setIsPlaying(false)}>
-          <source src={activeStory.audio.mp3} type="audio/mpeg" />
-          <source src={activeStory.audio.ogg} type="audio/ogg" />
-        </audio>
-      </section>
+            <div className="player__controls">
+              <button type="button" onClick={handlePlay}>
+                播放
+              </button>
+              <button type="button" onClick={handlePause}>
+                暫停
+              </button>
+              <button type="button" onClick={handleStop}>
+                停止
+              </button>
+            </div>
+            {playbackError ? (
+              <p className="player__error" role="alert">
+                {playbackError}
+              </p>
+            ) : null}
+          </div>
+          <audio ref={audioRef} preload="metadata" onEnded={() => setIsPlaying(false)}>
+            <source src={activeStory.audio.mp3} type="audio/mpeg" />
+            <source src={activeStory.audio.ogg} type="audio/ogg" />
+          </audio>
+        </section>
 
-      <section className="story-intro">
-        <p>{activeStory.description}</p>
-      </section>
+        <div className="story-panel">
+          <section className="story-intro">
+            <p>{activeStory.description}</p>
+          </section>
 
-      <section className="album-list">
-        <div className="album-list__head">
-          <h3>聲景選輯</h3>
-          <button
-            type="button"
-            className="album-list__menu-btn"
-            onClick={() => setIsMenuOpen((prev) => !prev)}
-          >
-            {isMenuOpen ? '收起選單' : '展開選單'}
-          </button>
-        </div>
-        <div className={`album-list__grid ${isMenuOpen ? 'is-open' : ''}`}>
-          {stories.map((story, index) => {
-            const isActive = story.id === activeStoryId
-            return (
+          <section className="album-list">
+            <div className="album-list__head">
+              <h3>聲景選輯</h3>
               <button
                 type="button"
-                key={story.id}
-                className={`album-card ${isActive ? 'is-active' : ''}`}
-                onClick={() => selectStory(story.id)}
-                aria-pressed={isActive}
+                className="album-list__menu-btn"
+                onClick={() => setIsMenuOpen((prev) => !prev)}
+              >
+                {isMenuOpen ? '收起選單' : '展開選單'}
+              </button>
+            </div>
+            <div className={`album-list__grid ${isMenuOpen ? 'is-open' : ''}`}>
+              {stories.map((story, index) => {
+                const isActive = story.id === activeStoryId
+                return (
+                  <button
+                    type="button"
+                    key={story.id}
+                    className={`album-card ${isActive ? 'is-active' : ''}`}
+                    onClick={() => selectStory(story.id)}
+                    aria-pressed={isActive}
+                  >
+                    <img
+                      src={story.coverImage}
+                      alt={`${story.title} 專輯`}
+                      loading={index < 3 ? 'eager' : 'lazy'}
+                      decoding="async"
+                    />
+                    <span>{story.title}</span>
+                  </button>
+                )
+              })}
+            </div>
+          </section>
+
+          <section className="scene-list">
+            {activeStory.scenes.map((scene, index) => (
+              <article
+                key={scene.heading}
+                className={`scene-card ${activeSceneIndex === index ? 'is-in-view' : ''}`}
+                data-scene-index={index}
+                ref={(element) => {
+                  sceneRefs.current[index] = element
+                }}
               >
                 <img
-                  src={story.coverImage}
-                  alt={`${story.title} 專輯`}
-                  loading={index < 3 ? 'eager' : 'lazy'}
+                  src={scene.image}
+                  alt={`${activeStory.title} ${scene.heading}`}
+                  loading={index === 0 ? 'eager' : 'lazy'}
                   decoding="async"
                 />
-                <span>{story.title}</span>
-              </button>
-            )
-          })}
+                <div className="scene-card__content">
+                  <h4>{scene.heading}</h4>
+                  <p>{scene.text}</p>
+                </div>
+              </article>
+            ))}
+          </section>
         </div>
-      </section>
-
-      <section className="scene-list">
-        {activeStory.scenes.map((scene, index) => (
-          <article key={scene.heading} className="scene-card">
-            <img
-              src={scene.image}
-              alt={`${activeStory.title} ${scene.heading}`}
-              loading={index === 0 ? 'eager' : 'lazy'}
-              decoding="async"
-            />
-            <div className="scene-card__content">
-              <h4>{scene.heading}</h4>
-              <p>{scene.text}</p>
-            </div>
-          </article>
-        ))}
       </section>
 
       <section className="comments">
@@ -242,9 +287,7 @@ function App() {
             loading="lazy"
           />
         ) : (
-          <p className="comments__placeholder">
-            為了改善首屏載入速度，留言區採用按需載入。
-          </p>
+          <p className="comments__placeholder">點擊上方按鈕即可載入留言。</p>
         )}
       </section>
     </div>
