@@ -4,7 +4,6 @@ import './App.css'
 
 function App() {
   const audioRef = useRef(null)
-  const sceneRefs = useRef([])
   const [activeStoryId, setActiveStoryId] = useState(stories[0].id)
   const [activeSceneIndex, setActiveSceneIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -17,6 +16,9 @@ function App() {
     () => stories.find((story) => story.id === activeStoryId) ?? stories[0],
     [activeStoryId],
   )
+  const activeScene = activeStory.scenes[activeSceneIndex] ?? activeStory.scenes[0]
+  const canGoPrevScene = activeSceneIndex > 0
+  const canGoNextScene = activeSceneIndex < activeStory.scenes.length - 1
 
   useEffect(() => {
     let cancelled = false
@@ -63,43 +65,17 @@ function App() {
     audioElement.load()
   }, [activeStoryId])
 
-  useEffect(() => {
-    const desktopViewport = window.matchMedia('(min-width: 981px)')
-    if (!desktopViewport.matches) {
-      return
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const nextIndex = Number(entry.target.getAttribute('data-scene-index') ?? 0)
-            setActiveSceneIndex(nextIndex)
-          }
-        })
-      },
-      {
-        threshold: 0.6,
-      },
-    )
-
-    sceneRefs.current.forEach((scene) => {
-      if (scene) {
-        observer.observe(scene)
-      }
-    })
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [activeStoryId])
-
   const selectStory = (storyId) => {
     setActiveStoryId(storyId)
     setActiveSceneIndex(0)
     setIsCommentsOpen(false)
     setIsPlaying(false)
     setPlaybackError('')
+  }
+
+  const selectScene = (sceneIndex) => {
+    const boundedIndex = Math.max(0, Math.min(sceneIndex, activeStory.scenes.length - 1))
+    setActiveSceneIndex(boundedIndex)
   }
 
   const handlePlay = async () => {
@@ -180,14 +156,42 @@ function App() {
               章節 {activeSceneIndex + 1} / {activeStory.scenes.length}
             </p>
             <div className="player__controls">
-              <button type="button" onClick={handlePlay}>
-                播放
+              <button
+                type="button"
+                className={`player__icon-btn ${isPlaying ? 'is-active' : ''}`}
+                onClick={handlePlay}
+                aria-label="播放"
+                title="播放"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M8 6v12l10-6z" fill="currentColor" />
+                </svg>
+                <span className="sr-only">播放</span>
               </button>
-              <button type="button" onClick={handlePause}>
-                暫停
+              <button
+                type="button"
+                className="player__icon-btn"
+                onClick={handlePause}
+                aria-label="暫停"
+                title="暫停"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="7" y="6" width="4" height="12" fill="currentColor" />
+                  <rect x="13" y="6" width="4" height="12" fill="currentColor" />
+                </svg>
+                <span className="sr-only">暫停</span>
               </button>
-              <button type="button" onClick={handleStop}>
-                停止
+              <button
+                type="button"
+                className="player__icon-btn"
+                onClick={handleStop}
+                aria-label="停止"
+                title="停止"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="7" y="7" width="10" height="10" fill="currentColor" />
+                </svg>
+                <span className="sr-only">停止</span>
               </button>
             </div>
             {playbackError ? (
@@ -243,27 +247,64 @@ function App() {
           </section>
 
           <section className="scene-list">
-            {activeStory.scenes.map((scene, index) => (
-              <article
-                key={scene.heading}
-                className={`scene-card ${activeSceneIndex === index ? 'is-in-view' : ''}`}
-                data-scene-index={index}
-                ref={(element) => {
-                  sceneRefs.current[index] = element
-                }}
-              >
-                <img
-                  src={scene.image}
-                  alt={`${activeStory.title} ${scene.heading}`}
-                  loading={index === 0 ? 'eager' : 'lazy'}
-                  decoding="async"
-                />
-                <div className="scene-card__content">
-                  <h4>{scene.heading}</h4>
-                  <p>{scene.text}</p>
-                </div>
-              </article>
-            ))}
+            <div className="scene-list__head">
+              <h3>故事章節</h3>
+              <div className="scene-nav">
+                <button
+                  type="button"
+                  className="scene-nav__btn"
+                  onClick={() => selectScene(activeSceneIndex - 1)}
+                  disabled={!canGoPrevScene}
+                  aria-label="上一章"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M15.4 5.9L9.3 12l6.1 6.1-1.4 1.4L6.5 12l7.5-7.5z" fill="currentColor" />
+                  </svg>
+                </button>
+                <span className="scene-nav__progress">
+                  {activeSceneIndex + 1} / {activeStory.scenes.length}
+                </span>
+                <button
+                  type="button"
+                  className="scene-nav__btn"
+                  onClick={() => selectScene(activeSceneIndex + 1)}
+                  disabled={!canGoNextScene}
+                  aria-label="下一章"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M8.6 18.1L14.7 12 8.6 5.9 10 4.5l7.5 7.5-7.5 7.5z" fill="currentColor" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <article className="scene-card is-in-view">
+              <img
+                src={activeScene.image}
+                alt={`${activeStory.title} ${activeScene.heading}`}
+                loading="eager"
+                decoding="async"
+              />
+              <div className="scene-card__content">
+                <h4>{activeScene.heading}</h4>
+                <p>{activeScene.text}</p>
+              </div>
+            </article>
+
+            <div className="scene-switcher">
+              {activeStory.scenes.map((scene, index) => (
+                <button
+                  type="button"
+                  key={scene.heading}
+                  className={`scene-switcher__btn ${activeSceneIndex === index ? 'is-active' : ''}`}
+                  onClick={() => selectScene(index)}
+                  aria-pressed={activeSceneIndex === index}
+                >
+                  <span className="scene-switcher__index">{index + 1}</span>
+                  <span className="scene-switcher__title">{scene.heading}</span>
+                </button>
+              ))}
+            </div>
           </section>
         </div>
       </section>
