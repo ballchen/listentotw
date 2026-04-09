@@ -59,9 +59,14 @@ function App() {
     audioElement.pause()
     audioElement.currentTime = 0
     audioElement.load()
+  }, [activeStoryId])
+
+  const selectStory = (storyId) => {
+    setActiveStoryId(storyId)
+    setIsCommentsOpen(false)
     setIsPlaying(false)
     setPlaybackError('')
-  }, [activeStoryId])
+  }
 
   const handlePlay = async () => {
     const audioElement = audioRef.current
@@ -73,7 +78,7 @@ function App() {
       await audioElement.play()
       setIsPlaying(true)
       setPlaybackError('')
-    } catch (_error) {
+    } catch {
       setIsPlaying(false)
       setPlaybackError('音訊播放被瀏覽器阻擋，請再按一次播放。')
     }
@@ -185,10 +190,7 @@ function App() {
                 type="button"
                 key={story.id}
                 className={`album-card ${isActive ? 'is-active' : ''}`}
-                onClick={() => {
-                  setActiveStoryId(story.id)
-                  setIsCommentsOpen(false)
-                }}
+                onClick={() => selectStory(story.id)}
                 aria-pressed={isActive}
               >
                 <img
