@@ -1,0 +1,47 @@
+:root {
+  font-family:
+    'Noto Sans TC',
+    'PingFang TC',
+    'Microsoft JhengHei',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #f8f8ff;
+  background-color: #040406;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background:
+    linear-gradient(rgba(5, 5, 8, 0.72), rgba(5, 5, 8, 0.88)),
+    url('/img/bg.jpg') center / cover fixed no-repeat;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+#root {
+  min-height: 100svh;
+}
