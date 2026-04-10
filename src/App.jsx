@@ -5,6 +5,7 @@ import './App.css'
 function App() {
   const audioRef = useRef(null)
   const immersiveTouchStartXRef = useRef(null)
+  const storySwitchTimersRef = useRef([])
   const [activeStoryId, setActiveStoryId] = useState(stories[0].id)
   const [activeSceneIndex, setActiveSceneIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -12,6 +13,7 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isInitialReady, setIsInitialReady] = useState(false)
   const [playbackError, setPlaybackError] = useState('')
+  const [recordTransitionPhase, setRecordTransitionPhase] = useState('idle')
 
   const activeStory = useMemo(
     () => stories.find((story) => story.id === activeStoryId) ?? stories[0],
@@ -98,12 +100,48 @@ function App() {
     }
   }, [isSceneFullscreen, activeStory.scenes.length])
 
+  useEffect(
+    () => () => {
+      storySwitchTimersRef.current.forEach((timer) => {
+        window.clearTimeout(timer)
+      })
+    },
+    [],
+  )
+
   const selectStory = (storyId) => {
+    if (storyId === activeStoryId || recordTransitionPhase !== 'idle') {
+      return
+    }
+
+    const audioElement = audioRef.current
+    if (audioElement) {
+      audioElement.pause()
+      audioElement.currentTime = 0
+    }
+
     setActiveStoryId(storyId)
     setActiveSceneIndex(0)
     setIsSceneFullscreen(false)
     setIsPlaying(false)
     setPlaybackError('')
+
+    storySwitchTimersRef.current.forEach((timer) => {
+      window.clearTimeout(timer)
+    })
+    setRecordTransitionPhase('out')
+
+    const switchTimer = window.setTimeout(() => {
+      setActiveStoryId(storyId)
+      setActiveSceneIndex(0)
+      setRecordTransitionPhase('in')
+    }, 210)
+
+    const settleTimer = window.setTimeout(() => {
+      setRecordTransitionPhase('idle')
+    }, 560)
+
+    storySwitchTimersRef.current = [switchTimer, settleTimer]
   }
 
   const selectScene = (sceneIndex) => {
@@ -194,7 +232,7 @@ function App() {
 
       <section className="experience">
         <section className="player">
-          <div className="player__cover-wrap">
+          <div className={`player__cover-wrap ${recordTransitionPhase !== 'idle' ? `is-switching-${recordTransitionPhase}` : ''}`}>
             <img
               src={activeStory.coverImage}
               alt={`${activeStory.title} 封面`}
@@ -204,7 +242,7 @@ function App() {
               fetchPriority="high"
             />
           </div>
-          <div className="player__meta">
+          <div className={`player__meta ${recordTransitionPhase !== 'idle' ? `is-switching-${recordTransitionPhase}` : ''}`}>
             <p className="player__category">{activeStory.category}</p>
             <h2>{activeStory.title}</h2>
             <p className="player__quote">{activeStory.quote}</p>
@@ -291,6 +329,7 @@ function App() {
                     className={`scene-switcher__btn ${activeSceneIndex === index ? 'is-active' : ''}`}
                     onClick={() => selectScene(index)}
                     aria-pressed={activeSceneIndex === index}
+                    disabled={recordTransitionPhase !== 'idle'}
                   >
                     <span className="scene-switcher__index">{index + 1}</span>
                     <span className="scene-switcher__title">{scene.heading}</span>
@@ -355,6 +394,7 @@ function App() {
                 className={`album-card ${isActive ? 'is-active' : ''}`}
                 onClick={() => selectStory(story.id)}
                 aria-pressed={isActive}
+                disabled={recordTransitionPhase !== 'idle'}
               >
                 <img
                   src={story.coverImage}
@@ -378,14 +418,23 @@ function App() {
           onTouchStart={handleImmersiveTouchStart}
           onTouchEnd={handleImmersiveTouchEnd}
         >
-          <img
-            src={activeScene.image}
-            alt={`${activeStory.title} ${activeScene.heading}`}
-            className="immersive-view__image"
-            loading="eager"
-            decoding="async"
-          />
-          <div className="immersive-view__shade" />
+          <div key={`${activeStory.id}-${activeSceneIndex}`} className="immersive-view__scene">
+            <img
+              src={activeScene.image}
+              alt={`${activeStory.title} ${activeScene.heading}`}
+              className="immersive-view__image"
+              loading="eager"
+              decoding="async"
+            />
+            <div className="immersive-view__shade" />
+            <div className="immersive-view__content">
+              <p className="immersive-view__meta">
+                {activeStory.title} · 章節 {activeSceneIndex + 1}
+              </p>
+              <h4>{activeScene.heading}</h4>
+              <p>{activeScene.text}</p>
+            </div>
+          </div>
           <button
             type="button"
             className="immersive-view__nav immersive-view__nav--prev"
@@ -421,13 +470,6 @@ function App() {
               />
             </svg>
           </button>
-          <div className="immersive-view__content">
-            <p className="immersive-view__meta">
-              {activeStory.title} · 章節 {activeSceneIndex + 1}
-            </p>
-            <h4>{activeScene.heading}</h4>
-            <p>{activeScene.text}</p>
-          </div>
         </div>
       ) : null}
     </div>

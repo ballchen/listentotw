@@ -342,6 +342,10 @@
   box-shadow: 0 8px 18px rgba(41, 48, 104, 0.48);
 }
 
+.scene-switcher__btn.is-switching {
+  animation: pickerPulse 300ms ease;
+}
+
 .scene-switcher__index {
   display: inline-flex;
   width: 24px;
@@ -403,6 +407,10 @@
   transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
+.album-card.is-switching {
+  animation: vinylSelect 520ms cubic-bezier(0.2, 0.75, 0.35, 1);
+}
+
 .album-card:hover {
   transform: translateY(-2px);
   border-color: rgba(229, 232, 255, 0.42);
@@ -444,6 +452,10 @@
   object-fit: cover;
 }
 
+.immersive-view__image.is-scene-animating {
+  animation: immersiveFade 320ms ease;
+}
+
 .immersive-view__shade {
   position: absolute;
   inset: 0;
@@ -481,6 +493,10 @@
   border: 0;
   padding: 16px 18px;
   backdrop-filter: blur(4px);
+}
+
+.immersive-view__content.is-scene-animating {
+  animation: immersiveCaptionFade 320ms ease;
 }
 
 .immersive-view__meta {
@@ -571,6 +587,64 @@
   }
   100% {
     transform: translateX(300%);
+  }
+}
+
+@keyframes pickerPulse {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(0.96);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes vinylSelect {
+  0% {
+    transform: perspective(700px) rotateY(0deg) translateY(0);
+    box-shadow: 0 0 0 rgba(62, 87, 209, 0);
+  }
+  35% {
+    transform: perspective(700px) rotateY(-18deg) translateY(-5px);
+    box-shadow: 0 14px 24px rgba(62, 87, 209, 0.34);
+  }
+  100% {
+    transform: perspective(700px) rotateY(0deg) translateY(0);
+    box-shadow: 0 0 0 rgba(62, 87, 209, 0);
+  }
+}
+
+@keyframes immersiveFade {
+  0% {
+    opacity: 0.32;
+    transform: scale(1.035);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes immersiveCaptionFade {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-switcher__btn.is-switching,
+  .album-card.is-switching,
+  .immersive-view__image.is-scene-animating,
+  .immersive-view__content.is-scene-animating {
+    animation: none;
   }
 }
 
