@@ -6,6 +6,7 @@ function App() {
   const audioRef = useRef(null)
   const immersiveTouchStartXRef = useRef(null)
   const storySwitchTimersRef = useRef([])
+  const sceneTransitionTimersRef = useRef([])
   const [activeStoryId, setActiveStoryId] = useState(stories[0].id)
   const [activeSceneIndex, setActiveSceneIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -14,6 +15,7 @@ function App() {
   const [isInitialReady, setIsInitialReady] = useState(false)
   const [playbackError, setPlaybackError] = useState('')
   const [recordTransitionPhase, setRecordTransitionPhase] = useState('idle')
+  const [sceneTransitionPhase, setSceneTransitionPhase] = useState('idle')
 
   const activeStory = useMemo(
     () => stories.find((story) => story.id === activeStoryId) ?? stories[0],
@@ -105,6 +107,9 @@ function App() {
       storySwitchTimersRef.current.forEach((timer) => {
         window.clearTimeout(timer)
       })
+      sceneTransitionTimersRef.current.forEach((timer) => {
+        window.clearTimeout(timer)
+      })
     },
     [],
   )
@@ -120,15 +125,18 @@ function App() {
       audioElement.currentTime = 0
     }
 
-    setActiveStoryId(storyId)
-    setActiveSceneIndex(0)
-    setIsSceneFullscreen(false)
-    setIsPlaying(false)
-    setPlaybackError('')
-
     storySwitchTimersRef.current.forEach((timer) => {
       window.clearTimeout(timer)
     })
+
+    sceneTransitionTimersRef.current.forEach((timer) => {
+      window.clearTimeout(timer)
+    })
+
+    setSceneTransitionPhase('idle')
+    setIsSceneFullscreen(false)
+    setIsPlaying(false)
+    setPlaybackError('')
     setRecordTransitionPhase('out')
 
     const switchTimer = window.setTimeout(() => {
@@ -146,7 +154,31 @@ function App() {
 
   const selectScene = (sceneIndex) => {
     const boundedIndex = Math.max(0, Math.min(sceneIndex, activeStory.scenes.length - 1))
-    setActiveSceneIndex(boundedIndex)
+    if (boundedIndex === activeSceneIndex || sceneTransitionPhase === 'out') {
+      return
+    }
+
+    if (!isSceneFullscreen) {
+      setActiveSceneIndex(boundedIndex)
+      return
+    }
+
+    sceneTransitionTimersRef.current.forEach((timer) => {
+      window.clearTimeout(timer)
+    })
+
+    setSceneTransitionPhase('out')
+
+    const changeTimer = window.setTimeout(() => {
+      setActiveSceneIndex(boundedIndex)
+      setSceneTransitionPhase('in')
+    }, 170)
+
+    const settleTimer = window.setTimeout(() => {
+      setSceneTransitionPhase('idle')
+    }, 460)
+
+    sceneTransitionTimersRef.current = [changeTimer, settleTimer]
   }
 
   const handleImmersiveTouchStart = (event) => {
@@ -418,7 +450,16 @@ function App() {
           onTouchStart={handleImmersiveTouchStart}
           onTouchEnd={handleImmersiveTouchEnd}
         >
-          <div key={`${activeStory.id}-${activeSceneIndex}`} className="immersive-view__scene">
+          <div
+            key={`${activeStory.id}-${activeSceneIndex}`}
+            className={`immersive-view__scene ${
+              sceneTransitionPhase === 'out'
+                ? 'is-scene-out'
+                : sceneTransitionPhase === 'in'
+                  ? 'is-scene-in'
+                  : ''
+            }`}
+          >
             <img
               src={activeScene.image}
               alt={`${activeStory.title} ${activeScene.heading}`}
