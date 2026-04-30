@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Helvetica Neue", Helvetica, Arial, "微軟正黑體", sans-serif;
+  --color-stage: #000000;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-stage);
+  color: white;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes spin-disc {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.disc-spin {
+  animation: spin-disc 1.6s linear infinite;
+  transform-origin: 50% 50%;
+}
+.disc-spin-paused {
+  animation-play-state: paused;
+}

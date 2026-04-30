@@ -1,0 +1,27 @@
+---
+import '../styles/global.css';
+import Stage from '../components/Stage';
+---
+
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta
+      name="description"
+      content="聽見，福爾摩沙 — 用十段聲音紀錄台灣的傳統工藝、文化與生活。"
+    />
+    <meta property="og:title" content="聽見，福爾摩沙" />
+    <meta
+      property="og:description"
+      content="十段台灣傳統聲音的紀錄與故事"
+    />
+    <title>聽見，福爾摩沙</title>
+  </head>
+  <body>
+    <Stage client:load />
+  </body>
+</html>
