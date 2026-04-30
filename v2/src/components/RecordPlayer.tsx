@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { tracks } from '../data/tracks';
 import { playerStore, usePlayer } from '../state/playerStore';
+import Picture from './Picture';
+import VinylDisc from './VinylDisc';
 
 type Props = {
   onEnter: () => void;
@@ -25,7 +27,7 @@ export default function RecordPlayer({ onEnter }: Props) {
     else a.pause();
   }, [playing]);
 
-  // Keyboard: space toggles play, arrow keys switch tracks
+  // Keyboard: space toggles play, arrows switch tracks
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       const target = e.target as HTMLElement | null;
@@ -48,19 +50,22 @@ export default function RecordPlayer({ onEnter }: Props) {
   return (
     <section
       id="player"
-      className="relative w-full min-h-screen overflow-hidden bg-cover bg-center
-                 flex flex-col items-center"
-      style={{ backgroundImage: 'url(/img/bg.jpg)' }}
+      className="relative w-full min-h-screen overflow-hidden flex flex-col items-center"
+      style={{
+        backgroundImage:
+          'image-set(url(/img/bg.avif) type("image/avif"), url(/img/bg.webp) type("image/webp"), url(/img/bg.jpg) type("image/jpeg"))',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      }}
       aria-labelledby="player-heading"
     >
       <h1 id="player-heading" className="sr-only">
         聽見，福爾摩沙 — 唱片機
       </h1>
 
-      {/* DESKTOP layout (lg+): original phonograph composition */}
+      {/* DESKTOP layout (lg+) */}
       <div className="hidden lg:block w-full h-screen">
-        {/* Recorder body */}
-        <img
+        <Picture
           src="/img/recorder.png"
           alt=""
           aria-hidden="true"
@@ -68,28 +73,15 @@ export default function RecordPlayer({ onEnter }: Props) {
                      left-[-440px] top-[-87px] w-[933px] h-[600px]"
         />
 
-        {/* Disc with cover */}
-        <div className="absolute left-[-180px] top-[-140px] w-[700px] h-[700px] z-30">
-          <img
-            src="/img/record.png"
-            alt=""
-            aria-hidden="true"
-            className={`absolute inset-0 w-full h-full
-                        ${playing && !changing ? 'disc-spin' : ''}
-                        ${changing ? 'disc-change' : ''}`}
-          />
-          <img
-            src={track.cover}
-            alt=""
-            aria-hidden="true"
-            className={`absolute left-[200px] top-[200px] w-[300px] h-[300px]
-                        ${playing && !changing ? 'disc-spin' : ''}
-                        ${changing ? 'disc-change' : ''}`}
-          />
-        </div>
+        <VinylDisc
+          cover={track.cover}
+          spinning={playing}
+          changing={changing}
+          className="absolute left-[-180px] top-[-140px] w-[700px] h-[700px] z-30"
+        />
 
-        {/* Tonearm */}
-        <img
+        {/* Tonearm — keep raster (head.png) for now, with WebP/AVIF fallback */}
+        <Picture
           src="/img/head.png"
           alt=""
           aria-hidden="true"
@@ -98,9 +90,8 @@ export default function RecordPlayer({ onEnter }: Props) {
                       ${changing ? 'arm-lift' : ''}`}
         />
 
-        {/* Logo + controls (desktop right column) */}
         <div className="absolute left-[750px] top-0 w-[480px] z-50">
-          <img
+          <Picture
             src="/img/logo.png"
             alt="聽見，福爾摩沙"
             className="float-right mt-5 w-[254px] h-[250px]"
@@ -111,39 +102,22 @@ export default function RecordPlayer({ onEnter }: Props) {
         </div>
       </div>
 
-      {/* MOBILE / TABLET layout (<lg): vertical stack */}
+      {/* MOBILE / TABLET layout */}
       <div className="lg:hidden flex flex-col items-center w-full px-4 pt-6 pb-4 gap-6">
-        <img
+        <Picture
           src="/img/logo.png"
           alt="聽見，福爾摩沙"
           className="w-40 sm:w-48 h-auto"
         />
 
-        {/* Disc — square, max 80vw */}
-        <div className="relative w-[min(80vw,420px)] aspect-square">
-          <img
-            src="/img/record.png"
-            alt=""
-            aria-hidden="true"
-            className={`absolute inset-0 w-full h-full
-                        ${playing && !changing ? 'disc-spin' : ''}
-                        ${changing ? 'disc-change' : ''}`}
-          />
-          <img
-            src={track.cover}
-            alt=""
-            aria-hidden="true"
-            className={`absolute left-1/2 top-1/2 w-[42%] h-[42%] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover
-                        ${playing && !changing ? 'disc-spin' : ''}
-                        ${changing ? 'disc-change' : ''}`}
-          />
-        </div>
+        <VinylDisc
+          cover={track.cover}
+          spinning={playing}
+          changing={changing}
+          className="w-[min(80vw,420px)] aspect-square"
+        />
 
-        <div
-          className="text-center"
-          aria-live="polite"
-          aria-atomic="true"
-        >
+        <div className="text-center" aria-live="polite" aria-atomic="true">
           <p className="text-xs tracking-[0.4em] text-white/60 uppercase">
             {String(track.id).padStart(2, '0')} · {track.theme}
           </p>
@@ -206,7 +180,7 @@ function Controls({
                    focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         aria-label="進入故事頁"
       >
-        <img src="/img/btn-story.png" alt="" aria-hidden="true" className="h-[50px]" />
+        <Picture src="/img/btn-story.png" alt="" aria-hidden="true" className="h-[50px]" />
       </button>
     </>
   );
@@ -232,7 +206,7 @@ function ControlButton({
                  disabled:cursor-wait disabled:opacity-60
                  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
     >
-      <img src={src} alt="" aria-hidden="true" className="w-[50px] h-[50px]" />
+      <Picture src={src} alt="" aria-hidden="true" className="w-[50px] h-[50px]" />
     </button>
   );
 }

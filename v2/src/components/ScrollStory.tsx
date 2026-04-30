@@ -3,6 +3,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { tracks } from '../data/tracks';
 import { usePlayer } from '../state/playerStore';
+import Picture from './Picture';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -145,8 +146,8 @@ function Panel({
       data-panel
       className="relative w-full min-h-[100svh] flex items-center justify-center overflow-hidden"
     >
-      <img
-        data-photo
+      <Picture
+        data-photo=""
         src={photo}
         alt=""
         aria-hidden="true"

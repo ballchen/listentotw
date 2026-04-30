@@ -9,7 +9,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "optimize": "node scripts/optimize-images.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.4",
@@ -24,6 +25,7 @@
   "devDependencies": {
     "@types/howler": "^2.2.12",
     "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3"
+    "@types/react-dom": "^19.2.3",
+    "sharp": "^0.34.5"
   }
 }

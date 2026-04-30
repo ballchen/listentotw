@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { tracks } from '../data/tracks';
 import { playerStore, usePlayer } from '../state/playerStore';
+import Picture from './Picture';
 
 export default function AlbumPicker() {
   const { currentIndex, changing } = usePlayer();
@@ -46,7 +47,7 @@ export default function AlbumPicker() {
                             disabled:cursor-wait disabled:opacity-70
                             focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white`}
               >
-                <img
+                <Picture
                   src={t.cover}
                   alt={`${t.title} 封面`}
                   loading="lazy"

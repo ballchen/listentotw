@@ -76,8 +76,30 @@ npm run build    # static output → dist/
 - Legacy `fb.html / fb0–9.html` and `img/btn-fb.png` removed entirely;
   the comment system is no longer part of the product.
 
-## What's left for later phases
+### Phase 4 — Image pipeline & SVG disc
+- `scripts/optimize-images.mjs` walks the legacy `img/` tree with
+  `sharp` and emits sibling `.webp` + `.avif` for every PNG/JPG.
+  Originals are preserved so the legacy site keeps working.
+- 60 images, **33.4 MB → 3.6 MB (–89%)** when serving the best of
+  webp/avif. Hero asset `record.png` 1.5 MB → 63 KB AVIF.
+- `<Picture>` helper renders `<picture><source avif><source webp><img></picture>`
+  using path conventions; works with any existing absolute path.
+- `<VinylDisc>` redraws the disc as pure CSS gradients + SVG-style
+  layers, dropping the 1.5 MB `record.png` entirely on screen.
+- Background image uses CSS `image-set()` so the browser picks AVIF
+  → WebP → JPEG.
+- Run `npm run optimize` to (re)generate, then `npm run build`.
 
-- Phase 4 — image pipeline: convert PNG/JPG → WebP/AVIF, redraw the
-  recorder/disc/tonearm as SVG (currently still raster from legacy).
-- Phase 5 — Lighthouse CI + Vercel/Cloudflare deploy.
+### Phase 5 — Lighthouse CI & deploy
+- `.lighthouserc.json` enforces accessibility ≥ 0.95 (error) and
+  performance / best-practices / SEO ≥ 0.9 (warn) over 3 runs.
+- `.github/workflows/lighthouse.yml` runs the full pipeline
+  (`npm ci → optimize → build → lhci autorun`) on push/PR that touches
+  `v2/`.
+- `vercel.json` configures Astro framework + `optimize && build` build
+  command, with `Cache-Control: public, max-age=31536000, immutable`
+  on `/img/*`, `/audio/*`, `/_astro/*`, and `Accept-Ranges: bytes` on
+  audio for HTTP range streaming.
+- `public/_headers` provides equivalent caching + a security baseline
+  (Referrer-Policy, X-Content-Type-Options, X-Frame-Options,
+  Permissions-Policy) for Cloudflare Pages / Netlify.
