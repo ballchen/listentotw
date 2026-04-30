@@ -14,15 +14,60 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Skip-to-content link, visible only on focus */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  padding: 0.75rem 1rem;
+  background: white;
+  color: black;
+  text-decoration: none;
+}
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+}
+
+/* Disc spin */
 @keyframes spin-disc {
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
-
 .disc-spin {
   animation: spin-disc 1.6s linear infinite;
   transform-origin: 50% 50%;
 }
-.disc-spin-paused {
-  animation-play-state: paused;
+
+/* Disc swap — desktop slides off to the left, mobile fades */
+@keyframes disc-change {
+  0%   { transform: translateX(0); }
+  50%  { transform: translateX(-60vw); opacity: 0.2; }
+  100% { transform: translateX(0); }
+}
+.disc-change {
+  animation: disc-change 2s ease-in-out 1;
+}
+
+/* Tonearm lift (only meaningful on desktop overlay) */
+@keyframes arm-lift {
+  0%, 100% { transform: rotate(45deg); }
+  20%, 80% { transform: rotate(30deg); }
+}
+.arm-lift {
+  animation: arm-lift 2.8s ease-in-out 1;
+}
+
+/* Respect user preference */
+@media (prefers-reduced-motion: reduce) {
+  .disc-spin,
+  .disc-change,
+  .arm-lift {
+    animation: none !important;
+  }
+  *, *::before, *::after {
+    transition-duration: 0ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -25,78 +25,133 @@ export default function RecordPlayer({ onEnter }: Props) {
     else a.pause();
   }, [playing]);
 
+  // Keyboard: space toggles play, arrow keys switch tracks
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      const target = e.target as HTMLElement | null;
+      if (target && /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        playerStore.togglePlay();
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        playerStore.setIndex((currentIndex + 1) % tracks.length);
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        playerStore.setIndex((currentIndex - 1 + tracks.length) % tracks.length);
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [currentIndex]);
+
   return (
     <section
-      className="relative w-full min-h-screen overflow-hidden bg-cover bg-center"
+      id="player"
+      className="relative w-full min-h-screen overflow-hidden bg-cover bg-center
+                 flex flex-col items-center"
       style={{ backgroundImage: 'url(/img/bg.jpg)' }}
-      aria-label="聽見福爾摩沙 唱片機"
+      aria-labelledby="player-heading"
     >
-      {/* Recorder body — kept as raster for visual fidelity in Phase 1 */}
-      <div className="absolute inset-0">
+      <h1 id="player-heading" className="sr-only">
+        聽見，福爾摩沙 — 唱片機
+      </h1>
+
+      {/* DESKTOP layout (lg+): original phonograph composition */}
+      <div className="hidden lg:block w-full h-screen">
+        {/* Recorder body */}
         <img
           src="/img/recorder.png"
           alt=""
+          aria-hidden="true"
           className="absolute pointer-events-none select-none
-                     left-[-440px] top-[-87px] w-[933px] h-[600px]
-                     md:left-[-200px] md:top-[40px] md:w-[700px] md:h-auto
-                     lg:left-[-440px] lg:top-[-87px] lg:w-[933px] lg:h-[600px]"
+                     left-[-440px] top-[-87px] w-[933px] h-[600px]"
         />
-      </div>
 
-      {/* Disc with cover art */}
-      <div className="absolute left-[-180px] top-[-140px] w-[700px] h-[700px] z-30
-                      lg:left-[-180px] lg:top-[-140px] lg:w-[700px] lg:h-[700px]">
-        <img
-          src="/img/record.png"
-          alt=""
-          className={`absolute inset-0 w-full h-full
-                      ${playing && !changing ? 'disc-spin' : ''}
-                      ${changing ? 'disc-change' : ''}`}
-        />
-        <img
-          src={track.cover}
-          alt={`${track.title} 專輯封面`}
-          className={`absolute left-[200px] top-[200px] w-[300px] h-[300px]
-                      ${playing && !changing ? 'disc-spin' : ''}
-                      ${changing ? 'disc-change' : ''}`}
-        />
-      </div>
+        {/* Disc with cover */}
+        <div className="absolute left-[-180px] top-[-140px] w-[700px] h-[700px] z-30">
+          <img
+            src="/img/record.png"
+            alt=""
+            aria-hidden="true"
+            className={`absolute inset-0 w-full h-full
+                        ${playing && !changing ? 'disc-spin' : ''}
+                        ${changing ? 'disc-change' : ''}`}
+          />
+          <img
+            src={track.cover}
+            alt=""
+            aria-hidden="true"
+            className={`absolute left-[200px] top-[200px] w-[300px] h-[300px]
+                        ${playing && !changing ? 'disc-spin' : ''}
+                        ${changing ? 'disc-change' : ''}`}
+          />
+        </div>
 
-      {/* Tonearm */}
-      <div className="absolute left-[-180px] top-[-140px] w-[700px] h-[700px] z-40 pointer-events-none">
+        {/* Tonearm */}
         <img
           src="/img/head.png"
           alt=""
-          className={`absolute w-[550px] h-[550px] top-[-3%]
-                      origin-[46.9%_24.25%] rotate-45
+          aria-hidden="true"
+          className={`absolute left-[-180px] top-[-140px] w-[550px] h-[550px]
+                      origin-[46.9%_24.25%] rotate-45 z-40 pointer-events-none
                       ${changing ? 'arm-lift' : ''}`}
         />
+
+        {/* Logo + controls (desktop right column) */}
+        <div className="absolute left-[750px] top-0 w-[480px] z-50">
+          <img
+            src="/img/logo.png"
+            alt="聽見，福爾摩沙"
+            className="float-right mt-5 w-[254px] h-[250px]"
+          />
+          <div className="clear-both pt-[300px] flex gap-2">
+            <Controls onEnter={onEnter} audioRef={audioRef} />
+          </div>
+        </div>
       </div>
 
-      {/* Logo + controls (right column) */}
-      <div className="absolute left-[750px] top-0 w-[480px] z-50
-                      max-lg:static max-lg:w-full max-lg:flex max-lg:flex-col max-lg:items-center max-lg:pt-8">
+      {/* MOBILE / TABLET layout (<lg): vertical stack */}
+      <div className="lg:hidden flex flex-col items-center w-full px-4 pt-6 pb-4 gap-6">
         <img
           src="/img/logo.png"
           alt="聽見，福爾摩沙"
-          className="float-right mt-5 w-[254px] h-[250px] max-lg:float-none"
+          className="w-40 sm:w-48 h-auto"
         />
 
-        <div className="clear-both pt-[300px] flex gap-2 max-lg:pt-4 max-lg:justify-center">
-          <ControlButton src="/img/btn-1.png" label="播放" onClick={() => playerStore.setPlaying(true)} />
-          <ControlButton src="/img/btn-2.png" label="暫停" onClick={() => playerStore.setPlaying(false)} />
-          <ControlButton src="/img/btn-3.png" label="停止" onClick={() => {
-            playerStore.stop();
-            const a = audioRef.current; if (a) a.load();
-          }} />
-          <button
-            type="button"
-            onClick={onEnter}
-            className="cursor-pointer transition-transform hover:-translate-y-px"
-            aria-label="進入故事"
-          >
-            <img src="/img/btn-story.png" alt="" className="h-[50px]" />
-          </button>
+        {/* Disc — square, max 80vw */}
+        <div className="relative w-[min(80vw,420px)] aspect-square">
+          <img
+            src="/img/record.png"
+            alt=""
+            aria-hidden="true"
+            className={`absolute inset-0 w-full h-full
+                        ${playing && !changing ? 'disc-spin' : ''}
+                        ${changing ? 'disc-change' : ''}`}
+          />
+          <img
+            src={track.cover}
+            alt=""
+            aria-hidden="true"
+            className={`absolute left-1/2 top-1/2 w-[42%] h-[42%] -translate-x-1/2 -translate-y-1/2 rounded-full object-cover
+                        ${playing && !changing ? 'disc-spin' : ''}
+                        ${changing ? 'disc-change' : ''}`}
+          />
+        </div>
+
+        <div
+          className="text-center"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          <p className="text-xs tracking-[0.4em] text-white/60 uppercase">
+            {String(track.id).padStart(2, '0')} · {track.theme}
+          </p>
+          <p className="mt-1 text-xl font-medium">{track.title}</p>
+        </div>
+
+        <div className="flex gap-3 items-center justify-center">
+          <Controls onEnter={onEnter} audioRef={audioRef} />
         </div>
       </div>
 
@@ -105,39 +160,79 @@ export default function RecordPlayer({ onEnter }: Props) {
         hidden
         onEnded={() => playerStore.setPlaying(false)}
         preload="metadata"
+        aria-label={`音軌：${track.title}`}
       >
         <source src={track.audio.mp3} type="audio/mpeg" />
         <source src={track.audio.ogg} type="audio/ogg" />
       </audio>
-
-      <style>{`
-        @keyframes disc-change {
-          0%   { transform: translateX(0); }
-          50%  { transform: translateX(-600px); }
-          100% { transform: translateX(0); }
-        }
-        .disc-change { animation: disc-change 2s ease-in-out 1; }
-        @keyframes arm-lift {
-          0%, 100% { transform: rotate(45deg); }
-          20%, 80% { transform: rotate(30deg); }
-        }
-        .arm-lift { animation: arm-lift 2.8s ease-in-out 1; }
-      `}</style>
     </section>
   );
 }
 
+function Controls({
+  onEnter, audioRef,
+}: { onEnter: () => void; audioRef: React.RefObject<HTMLAudioElement | null> }) {
+  const { playing, changing } = usePlayer();
+  return (
+    <>
+      <ControlButton
+        src="/img/btn-1.png"
+        label="播放"
+        pressed={playing}
+        disabled={changing}
+        onClick={() => playerStore.setPlaying(true)}
+      />
+      <ControlButton
+        src="/img/btn-2.png"
+        label="暫停"
+        pressed={!playing}
+        disabled={changing}
+        onClick={() => playerStore.setPlaying(false)}
+      />
+      <ControlButton
+        src="/img/btn-3.png"
+        label="停止"
+        disabled={changing}
+        onClick={() => {
+          playerStore.stop();
+          const a = audioRef.current;
+          if (a) a.load();
+        }}
+      />
+      <button
+        type="button"
+        onClick={onEnter}
+        className="ml-2 cursor-pointer transition-transform hover:-translate-y-px
+                   focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        aria-label="進入故事頁"
+      >
+        <img src="/img/btn-story.png" alt="" aria-hidden="true" className="h-[50px]" />
+      </button>
+    </>
+  );
+}
+
 function ControlButton({
-  src, label, onClick,
-}: { src: string; label: string; onClick: () => void }) {
+  src, label, onClick, pressed, disabled,
+}: {
+  src: string;
+  label: string;
+  onClick: () => void;
+  pressed?: boolean;
+  disabled?: boolean;
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="cursor-pointer transition-transform hover:-translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+      aria-pressed={pressed}
+      disabled={disabled}
+      className="cursor-pointer transition-transform hover:-translate-y-px
+                 disabled:cursor-wait disabled:opacity-60
+                 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
     >
-      <img src={src} alt="" className="w-[50px] h-[50px]" />
+      <img src={src} alt="" aria-hidden="true" className="w-[50px] h-[50px]" />
     </button>
   );
 }

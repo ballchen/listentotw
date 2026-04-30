@@ -43,12 +43,41 @@ npm run dev      # http://localhost:4321
 npm run build    # static output → dist/
 ```
 
+### Phase 2 — RWD
+- Mobile-first refactor of `RecordPlayer.tsx`: vertical stack on `<lg`
+  (logo → disc → track caption → controls), original phonograph composition
+  on `lg+`.
+- Disc sized as `w-[min(80vw,420px)] aspect-square` so it scales fluidly.
+- `AlbumPicker` cover sizes go `140 → 170 → 200px` across breakpoints with
+  swipe-hint text on touch and `scrollIntoView({inline:'center'})` whenever
+  the active track changes.
+- `ScrollStory` typography uses fluid `text-base sm: lg:` ramps; backdrop
+  overlay darkens to `bg-black/50` on small screens for legibility.
+
+### Phase 3 — Accessibility
+- Semantic landmarks: `<main>`, `<nav>`, `<section aria-labelledby>`,
+  `<article>` per panel.
+- All controls are real `<button>` with `aria-label`, `aria-pressed`
+  (play/pause), `aria-current`, `aria-disabled`.
+- Listbox semantics on the picker: `role="listbox"` + `role="option"` +
+  `aria-selected`.
+- Decorative images marked `aria-hidden` / empty `alt`.
+- **Keyboard**: `Space` toggles play, `←/→` switch tracks, `Esc` exits the
+  story view. Story view auto-focuses the back button.
+- **Live region**: an `aria-live="polite"` status node announces the
+  current track and play state.
+- **Reduced motion**: `prefers-reduced-motion: reduce` disables disc spin,
+  cover swap, tonearm lift, and replaces ScrollTrigger scrubs with static
+  reveals.
+- Skip-link to main content for keyboard users.
+- `lang="zh-Hant"`, `theme-color`, OG image, asset preload hints.
+
+### Comments
+- Legacy `fb.html / fb0–9.html` and `img/btn-fb.png` removed entirely;
+  the comment system is no longer part of the product.
+
 ## What's left for later phases
 
-- Phase 2 — fine-tune RWD breakpoints (mobile portrait of the disc, story
-  text kerning).
-- Phase 3 — full a11y pass (ARIA roles audit, focus trap on story view).
-- Phase 4 — replace FB Comments iframes with Giscus or remove.
-- Phase 5 — image pipeline: convert PNG/JPG → WebP/AVIF, redraw the
+- Phase 4 — image pipeline: convert PNG/JPG → WebP/AVIF, redraw the
   recorder/disc/tonearm as SVG (currently still raster from legacy).
-- Phase 6 — Lighthouse CI + Vercel/Cloudflare deploy.
+- Phase 5 — Lighthouse CI + Vercel/Cloudflare deploy.
