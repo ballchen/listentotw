@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Helvetica Neue", Helvetica, Arial, "微軟正黑體", sans-serif;
+  --font-sans: "Noto Sans TC", "Helvetica Neue", Helvetica, Arial, "微軟正黑體", sans-serif;
   --color-stage: #000000;
 }
 

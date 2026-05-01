@@ -39,9 +39,24 @@ repo root.
 ```bash
 cd v2
 npm install
-npm run dev      # http://localhost:4321
-npm run build    # static output → dist/
+npm run dev          # http://localhost:4321
+npm run build        # static output → dist/
+npm run optimize     # (re)generate webp/avif siblings
+npm run check        # astro check (TS + Astro)
+npm test             # vitest run (16 unit tests)
+npm run test:watch   # vitest in watch mode
 ```
+
+### Code quality
+- `astro check` reports **0 errors, 0 warnings, 0 hints** across 17 files.
+- Vitest covers `playerStore` state transitions (timer-based cover swap),
+  `<Picture>` AVIF/WebP/fallback logic, and the integrity of the
+  10-track dataset (id↔asset path consistency, no empty narrative
+  panels). 16 tests total.
+- Self-hosted **Noto Sans TC** (Traditional Chinese subset only,
+  weights 400 + 500) replaces the previous reliance on system 微軟正黑體,
+  which is not present on Linux / Android / many devices. Two woff2
+  files (~85 KB each), `font-display: swap`.
 
 ### Phase 2 — RWD
 - Mobile-first refactor of `RecordPlayer.tsx`: vertical stack on `<lg`

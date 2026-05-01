@@ -10,10 +10,14 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "optimize": "node scripts/optimize-images.mjs"
+    "optimize": "node scripts/optimize-images.mjs",
+    "check": "astro check",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.4",
+    "@fontsource/noto-sans-tc": "5.2.9",
     "@tailwindcss/vite": "^4.2.4",
     "astro": "^6.1.10",
     "gsap": "^3.15.0",
@@ -22,10 +26,21 @@
     "react-dom": "^19.2.5",
     "tailwindcss": "^4.2.4"
   },
+  "//": "@tailwindcss/vite@4.2.4 declares peer vite>=5.2 but actually needs >=7 (createIdResolver).",
+  "overrides": {
+    "vite": "^7.3.0"
+  },
   "devDependencies": {
+    "@astrojs/check": "0.9.4",
+    "@testing-library/dom": "10.4.1",
+    "@testing-library/jest-dom": "6.6.4",
+    "@testing-library/react": "16.3.0",
     "@types/howler": "^2.2.12",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "sharp": "^0.34.5"
+    "jsdom": "26.1.0",
+    "sharp": "^0.34.5",
+    "typescript": "5.6.3",
+    "vitest": "3.2.4"
   }
 }
